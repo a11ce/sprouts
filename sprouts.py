@@ -5,12 +5,22 @@ Graph = collections.namedtuple('Graph', 'loops singleEdges')
 
 def isPath(path, graph):
     loops = graph.loops
-    exposed = exposedPoints(graph)
+    exposed = exposedPoints(graph) 
+    if path[0] in exposed and path[1] in exposed:
+        return True
     for loop in loops:
-        if path[0] in exposed and path[1] in exposed:
-            return True
-        elif (path[0] in loop.inner and path[1] not in loop.outer or 
-            path[1] in loop.inner and path[0] not in loop.outer):
+        if  ( 
+                (
+                    (path[0] in loop.inner and path[1] not in loop.outer) 
+                    or 
+                    (path[1] in loop.inner and path[0] not in loop.outer)
+                )
+                and not
+                (
+                    (path[0] in loop.inner and path[1] in loop.inner)
+                )
+            ):
+            print(loop)
             return False
     return True
 
@@ -67,24 +77,35 @@ def possibleMoves(graph):
 
 def main():
 
-    testGraph = Graph(
+    turn3 = Graph(
+            [
+            Loop([1,6],[2,5,7,8]),
+            Loop([2,5,7],[8]),
+            ],
+            [
+            [5,6],
+            [2,8]
+            ]
+            )
+            
+    turn5 = Graph(
             [ 
             Loop([1,6],[2,3,4,5]),
             Loop([2,4,5], [3]),
-            #Loop([], [7]),
+            Loop([], [7]),
             ],
             [
-                [2,3],
-                [3,4],
-                [5,6],   
+            [2,3],
+            [3,4],
+            [5,6],      
             ]
             )
     
     
-    #print(exposedPoints(testGraph))
-    #print(isPath( (1,7) ,testGraph) )
-    #print(connectionsTo(6, testGraph))
+    print(exposedPoints(turn3))
+    print(isPath( (8,7) ,turn3) )
+    print(connectionsTo(7, turn3))
     #print(pointsInGraph(testGraph))
-    print(possibleMoves(testGraph))
+    print(possibleMoves(turn3))
 if __name__ == "__main__":
     main()
